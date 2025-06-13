@@ -29,3 +29,8 @@ This is my `mmc_spi.dts` file for anyone interested:
 ```
 
 Compile with `dtc -@ -I dts -O dtb -o mmc_spi.dtbo mmc_spi.dts`, install with `sudo cp mmc_spi.dtbo /boot/overlays/` and be sure to add `dtoverlay=mmc_spi` to `/boot/firmware/cmdline.txt`
+
+### Information that may be of interest
+
+Raspberry Pi model: `Raspberry Pi 3 Model B Rev 1.2`  
+Kernel version: `6.12.25+rpt-rpi-v8`
