@@ -3,8 +3,9 @@
 > [!NOTE]  
 > All commands run as `root`
 
-1. Install Debian Bookworm (12), select encrypted LVM
-1. Copy your SSH key across and connect with SSH
+1. Install Debian Bookworm (12), select encrypted LVM, make sure to select the
+   SSH server option when selecting packages
+1. Copy your SSH key across (`ssh-copy-id`) and connect with SSH
 1. When in the new installation, install packages:
 
     ```bash
@@ -14,7 +15,7 @@
 
 1. Copy your SSH keys to the `/etc/dropbear/initramfs/authorized_keys` file:
     ```bash
-    sed -e 's/^ssh-/no-port-forwarding,no-agent-forwarding,no-x11-forwarding,command="\/bin\/cryptroot-unlock" &/' ~<your_user>/.ssh/authorized_keys > /etc/dropbear/initramfs/authorized_keys
+    sed -e 's/^ssh-/no-port-forwarding,no-agent-forwarding,no-x11-forwarding &/' ~<your_user>/.ssh/authorized_keys > /etc/dropbear/initramfs/authorized_keys
     ```
 
 1. Update the host keys so it doesn't trigger an SSH warning:
@@ -30,7 +31,7 @@
 do):
 
     ```conf
-    DROPBEAR_OPTIONS="-s -j -k -I 60" 
+    DROPBEAR_OPTIONS="-s -j -k -I 60 -c /bin/cryptroot-unlock"
     ```
 
 1. Generate the `initramfs` and reboot:
