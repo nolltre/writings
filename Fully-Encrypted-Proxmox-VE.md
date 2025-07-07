@@ -12,20 +12,22 @@
     usermod -a -G sudo <your_user>
     ```
 
-1. Copy your SSH key to the `/etc/dropbear/initramfs/authorized_keys` file. 
-1. Update the host keys so it doesn't trigger an SSH warning (this assumes that
-   the keys in your user's `.ssh/authorized_keys` file are the ones you want
-    to use):
+1. Copy your SSH keys to the `/etc/dropbear/initramfs/authorized_keys` file:
+    ```bash
+    sed -e 's/^ssh-/no-port-forwarding,no-agent-forwarding,no-x11-forwarding,command="\/bin\/cryptroot-unlock" &/' ~<your_user>/.ssh/authorized_keys > /etc/dropbear/initramfs/authorized_keys
+    ```
+
+1. Update the host keys so it doesn't trigger an SSH warning:
     ```bash
     for I in ed25519 rsa ecdsa
     do
     /usr/lib/dropbear/dropbearconvert openssh dropbear "/etc/ssh/ssh_host_${I}_key" "/etc/dropbear/initramfs/dropbear_${I}_host_key"
     done
-
-    sed -e 's/^ssh-/no-port-forwarding,no-agent-forwarding,no-x11-forwarding,command="\/bin\/cryptroot-unlock" &/' ~<your_user>/.ssh/authorized_keys > /etc/dropbear/initramfs/authorized_keys
     ```
 
-1. Update the `/etc/dropbear/initramfs/dropbear.conf` and set the options for the `dropbear` daemon:
+1. Update the `/etc/dropbear/initramfs/dropbear.conf` and set the options for
+   the `dropbear` daemon (check `man dropbear` for an explanation of what they
+do):
 
     ```conf
     DROPBEAR_OPTIONS="-s -j -k -I 60" 
